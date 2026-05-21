@@ -111,6 +111,12 @@ button:hover{
   border:1px solid #333;  
 }  
   
+  #hasil{
+user-select:all;
+-webkit-user-select:all;
+cursor:text;
+}
+  
 .api-box{  
   margin-bottom:15px;  
 }  
@@ -289,9 +295,15 @@ Formal
 Copy  
 </button>  <button class="glow" onclick="quickClear()">  
 Clear  
-</button>  </div>  <div class="output" id="output">  
-Hasil translate muncul di sini...  
-<div class="mini-info">
+</button>  </div>  <div class="output">
+
+<div id="hasil" onclick="selectResult()">
+Hasil translate muncul di sini...
+</div>
+
+</div>
+
+<div class="bottom-info">
 
 Jika Android kalian tidak support popup browser,
 kalian bisa gunakan aplikasi
@@ -304,9 +316,10 @@ AWeb Window
 </a>
 
 </div>
-</div>  <div class="credit">  
-Made By Lilzyy 🔥
-</div>  <script>  
+
+<div class="credit">
+Made By Lilzyy 
+</div> <script>  
   
 /* SAVE API KEY */  
   
@@ -322,62 +335,84 @@ window.onload = function(){
   
 /* COPY SYSTEM */  
   
-async function copyText(text){  
-  
-  try{  
-  
-    await navigator.clipboard.writeText(text);  
-  
-  }  
-  
-  catch{  
-  
-    const temp = document.createElement("textarea");  
-  
-    temp.value = text;  
-  
-    document.body.appendChild(temp);  
-  
-    temp.select();  
-  
-    document.execCommand("copy");  
-  
-    document.body.removeChild(temp);  
-  
-  }  
-  
-}  
+async function copyText(text){
+
+try{
+
+await navigator.clipboard.writeText(text);
+
+return true;
+
+}
+
+catch{
+
+try{
+
+const temp =
+document.createElement("textarea");
+
+temp.value = text;
+
+document.body.appendChild(temp);
+
+temp.style.position = "fixed";
+temp.style.opacity = "0";
+
+temp.focus();
+temp.select();
+
+temp.setSelectionRange(0, 99999);
+
+const success =
+document.execCommand("copy");
+
+document.body.removeChild(temp);
+
+return success;
+
+}catch(err){
+
+console.log(err);
+
+return false;
+
+}
+
+}
+
+}
   
 /* MANUAL COPY */  
   
-async function manualCopy(){  
-  
-  const text =  
-  document.getElementById('output').innerText;  
-  
-  if(  
-    !text ||  
-    text === 'Hasil translate muncul di sini...'  
-  ){  
-  
-    alert('Belum ada hasil');  
-    return;  
-  
-  }  
-  
-  await copyText(text);  
-  
-  alert('Berhasil di copy!');  
-  
-}  
-  
+async function manualCopy(){
+
+const text =
+document.getElementById('hasil').innerText;
+
+if(
+!text ||
+text === 'Hasil translate muncul di sini...'
+){
+
+alert('Belum ada hasil');
+return;
+
+}
+
+await copyText(text);
+
+alert('Berhasil di copy!');
+
+}
+ 
 /* QUICK CLEAR */  
   
 function quickClear(){  
   
   document.getElementById('input').value = '';  
   
-  document.getElementById('output').innerText =  
+  document.getElementById('hasil').innerText =  
   'Hasil translate muncul di sini...';  
   
 }  
@@ -575,7 +610,7 @@ async function translateText(mode){
   document.getElementById('input').value.trim();  
   
   const output =  
-  document.getElementById('output');  
+  document.getElementById('hasil');  
   
   if(!apiKey){  
   
@@ -641,7 +676,14 @@ async function translateText(mode){
   
     output.innerText = result;  
   
-    await copyText(result);  
+    const copied =
+await copyText(result);
+
+if(!copied){
+
+alert("Tekan tahan hasil translate lalu copy manual");
+
+}
   
   }  
   
@@ -731,5 +773,24 @@ console.log(err);
 
 /* JALANKAN */
 userLogger();
+
+function selectResult(){
+
+const hasil =
+document.getElementById("hasil");
+
+const range =
+document.createRange();
+
+range.selectNodeContents(hasil);
+
+const sel =
+window.getSelection();
+
+sel.removeAllRanges();
+sel.addRange(range);
+
+}
+
 </script>  </body>  
 </html>  
