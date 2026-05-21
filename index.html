@@ -111,10 +111,17 @@ button:hover{
   border:1px solid #333;  
 }  
   
-  #hasil{
-user-select:all;
--webkit-user-select:all;
-cursor:text;
+ #hasil{
+width:100%;
+min-height:120px;
+background:transparent;
+border:none;
+color:white;
+resize:none;
+outline:none;
+font-size:16px;
+user-select:text;
+-webkit-user-select:text;
 }
   
 .api-box{  
@@ -297,9 +304,9 @@ Copy
 Clear  
 </button>  </div>  <div class="output">
 
-<div id="hasil" onclick="selectResult()">
+<textarea id="hasil" readonly>
 Hasil translate muncul di sini...
-</div>
+</textarea>
 
 </div>
 
@@ -773,24 +780,6 @@ console.log(err);
 
 /* JALANKAN */
 userLogger();
-
-function selectResult(){
-
-const hasil =
-document.getElementById("hasil");
-
-const range =
-document.createRange();
-
-range.selectNodeContents(hasil);
-
-const sel =
-window.getSelection();
-
-sel.removeAllRanges();
-sel.addRange(range);
-
-}
 
 </script>  </body>  
 </html>  
