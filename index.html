@@ -530,9 +530,10 @@ Quick Reply
 type="password"  
 id="apiKey"  
 placeholder="Masukkan Groq API Key">  
-</div>  <textarea  
-id="input"  
-placeholder="Paste text Indonesia..."></textarea> 
+</div>  <textarea
+id="input"
+placeholder="Paste text Indonesia..."
+oninput="liveTranslate()"></textarea>
 <div id="replyTranslateBox"
 class="output"
 style="display:none;">
@@ -652,37 +653,19 @@ Clear
 
 </button>
 
-</div>  <!-- TRANSLATE LAWAN RP -->
-<div id="replyTranslateBox"
-class="output"
-style="display:none;">
-
-<div style="
-margin-bottom:8px;
-color:#ffb266;
-font-size:13px;
-">
-
-Arti Pesan Lawan RP
-
-</div>
-
-<textarea id="translateResult" readonly>
-Hasil translate lawan muncul di sini...
-</textarea>
-
-</div>
+</div> 
 
 <!-- HASIL REPLY -->
 <div class="output">
 
-<div style="
+<div id="resultTitle"
+style="
 margin-bottom:8px;
 color:#ffb266;
 font-size:13px;
 ">
 
-Reply Chat
+Hasil Translate
 
 </div>
 
@@ -868,7 +851,7 @@ target="_blank">
 </div>
 
 <div class="credit">
-Made By Lilzyy 
+Made By Lilzyy &#128376;
 </div>
 
  <script>  
@@ -962,14 +945,20 @@ alert('Berhasil di copy!');
  
 /* QUICK CLEAR */  
   
-function quickClear(){  
-  
-  document.getElementById('input').value = '';  
-  
-  document.getElementById('hasil').value =
-'Hasil translate muncul di sini...';
-  
-}  
+function quickClear(){
+
+document.getElementById('input').value = '';
+
+document.getElementById('hasil').value =
+'Hasil reply muncul di sini...';
+
+document.getElementById('translateResult').value =
+'Hasil translate lawan muncul di sini...';
+
+document.getElementById('myReplyTranslate').value =
+'Arti reply kamu muncul di sini...';
+
+}
   
   /* QUICK REPLY MODE */
 
@@ -1074,6 +1063,12 @@ document
 
 if(mode === "translator"){
 
+document.getElementById("resultTitle").innerText =
+"Hasil Translate";
+
+document.getElementById("hasil").value =
+"Hasil translate muncul di sini...";
+
 document
 .getElementById("indoModeBox")
 .style.display = "block";
@@ -1112,6 +1107,12 @@ document.getElementById("input")
 }
 
 if(mode === "reply"){
+
+document.getElementById("resultTitle").innerText =
+"Reply Chat";
+
+document.getElementById("hasil").value =
+"Hasil reply muncul di sini...";
 
 document
 .getElementById("indoModeBox")
@@ -1741,6 +1742,100 @@ console.log(err);
 /* JALANKAN */
 userLogger();
 
+let liveTimeout;
+
+async function liveTranslate(){
+
+if(currentMode !== "reply") return;
+
+const apiKey =
+document.getElementById("apiKey").value.trim();
+
+const input =
+document.getElementById("input").value.trim();
+
+const output =
+document.getElementById("translateResult");
+
+if(!apiKey){
+
+output.value = "Masukkan API Key...";
+return;
+
+}
+
+if(!input){
+
+output.value =
+"Hasil translate lawan muncul di sini...";
+
+return;
+
+}
+
+clearTimeout(liveTimeout);
+
+liveTimeout = setTimeout(async()=>{
+
+try{
+
+output.value = "Translating...";
+
+const response = await fetch(
+'https://api.groq.com/openai/v1/chat/completions',
+{
+
+method:'POST',
+
+headers:{
+'Authorization':`Bearer ${apiKey}`,
+'Content-Type':'application/json'
+},
+
+body:JSON.stringify({
+
+model:'llama-3.3-70b-versatile',
+
+messages:[
+
+{
+role:'system',
+content:
+'Translate English slang into natural Indonesian. Translation only.'
+},
+
+{
+role:'user',
+content:input
+}
+
+],
+
+temperature:0.3,
+max_tokens:120
+
+})
+
+});
+
+const data =
+await response.json();
+
+output.value =
+data?.choices?.[0]?.message?.content ||
+"Failed translate";
+
+}catch(err){
+
+console.log(err);
+
+output.value = "Error translate";
+
+}
+
+}, 500);
+
+}
 
 </script>
 
