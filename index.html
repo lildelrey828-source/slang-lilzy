@@ -5,11 +5,100 @@
 <meta charset="UTF-8">  
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  <title>Slang-Translator</title>  <style>  
   
+  
+  .bottom-info{
+
+margin-top:20px;
+
+text-align:center;
+
+font-size:13px;
+
+color:#ccc;
+
+opacity:.8;
+
+}
+
+.bottom-info a{
+
+color:#ff7300;
+
+text-decoration:none;
+
+font-weight:bold;
+
+}
+
+.bottom-info a:hover{
+
+text-decoration:underline;
+
+}
+
+.tutorial-box{
+
+margin-top:25px;
+
+background:#1a1a1ae0;
+
+padding:18px;
+
+border-radius:14px;
+
+border:1px solid #333;
+
+line-height:1.7;
+
+font-size:14px;
+
+color:#ddd;
+
+box-shadow:
+0 0 15px rgba(255,115,0,.15);
+
+}
+
+.tutorial-box h3{
+
+color:#ffb266;
+
+margin-top:0;
+
+text-shadow:
+0 0 8px #ff7300;
+
+}
+
+.tutorial-box hr{
+
+border:none;
+
+border-top:1px solid #333;
+
+margin:18px 0;
+
+}
+
+.tutorial-box b{
+
+color:#ffb266;
+
+}
+
+.tutorial-box p{
+
+margin-bottom:12px;
+
+}
+  
 body{  
   margin:0;  
   padding:20px;  
   color:white;  
   font-family:Arial,sans-serif;  
+  
+  
   
   .mini-info{
 text-align:left;
@@ -163,6 +252,39 @@ input:focus{
   color:#ffb266;  
 }  
   
+  .top-menu{
+display:flex;
+justify-content:center;
+gap:10px;
+margin-bottom:15px;
+}
+
+.menu-btn{
+padding:10px 18px;
+border:none;
+border-radius:12px;
+background:#1a1a1ae0;
+color:white;
+font-size:14px;
+cursor:pointer;
+transition:0.2s;
+border:1px solid #333;
+}
+
+.menu-btn:hover{
+transform:scale(1.05);
+box-shadow:
+0 0 10px #ff7300;
+}
+
+.active{
+background:#ff7300;
+color:black;
+font-weight:bold;
+box-shadow:
+0 0 15px #ff7300;
+}
+  
   /* FLOATING GLOW */
 
 .glow-bg{
@@ -259,6 +381,121 @@ color:#ffb266;
 
 }
   
+  .small-btn{
+
+padding:8px 12px;
+font-size:13px;
+flex:none;
+min-width:85px;
+
+}
+  
+  /* MEMORY BUTTON */
+
+#memoryBtn{
+
+position:fixed;
+right:15px;
+bottom:15px;
+
+padding:10px 14px;
+
+border:none;
+border-radius:12px;
+
+background:#ff7300;
+color:black;
+
+font-weight:bold;
+font-size:13px;
+
+z-index:999;
+
+box-shadow:
+0 0 10px #ff7300;
+
+}
+
+/* MEMORY BOX */
+
+#memoryBox{
+
+position:fixed;
+
+right:15px;
+bottom:70px;
+
+width:320px;
+height:350px;
+
+background:#121212f2;
+
+border:1px solid #ff7300;
+border-radius:14px;
+
+display:none;
+
+z-index:999;
+
+overflow:hidden;
+
+box-shadow:
+0 0 20px #ff7300;
+
+}
+
+#memoryHeader{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:10px;
+
+background:#1e1e1e;
+
+color:#ffb266;
+font-weight:bold;
+
+border-bottom:1px solid #333;
+
+}
+
+#clearMemoryBtn{
+
+padding:5px 10px;
+
+font-size:12px;
+
+background:#ff7300;
+color:black;
+
+border:none;
+border-radius:8px;
+
+}
+
+#memoryContent{
+
+width:100%;
+height:100%;
+
+background:transparent;
+border:none;
+
+color:white;
+
+padding:10px;
+
+resize:none;
+outline:none;
+
+font-size:13px;
+
+box-sizing:border-box;
+
+}
+  
 </style>
 </head>
 
@@ -268,6 +505,26 @@ color:#ffb266;
 
 <div class="rain"></div>
 
+<div class="top-menu">
+
+<button id="translatorBtn"
+class="menu-btn active"
+onclick="switchMode('translator')">
+
+Translator
+
+</button>
+
+<button id="replyBtn"
+class="menu-btn"
+onclick="switchMode('reply')">
+
+Quick Reply
+
+</button>
+
+</div>
+
 <h1>Slang-Translator 🔥</h1>  <div class="api-box">  
 <input  
 type="password"  
@@ -275,13 +532,33 @@ id="apiKey"
 placeholder="Masukkan Groq API Key">  
 </div>  <textarea  
 id="input"  
-placeholder="Paste text Indonesia..."></textarea>  <div class="mode-box">  
+placeholder="Paste text Indonesia..."></textarea> 
+<div id="replyTranslateBox"
+class="output"
+style="display:none;">
+
+<div style="
+margin-bottom:8px;
+color:#ffb266;
+font-size:13px;
+">
+
+Arti Pesan Lawan RP
+
+</div>
+
+<textarea id="translateResult" readonly>
+Hasil translate lawan muncul di sini...
+</textarea>
+
+</div>
+ <div class="mode-box">  
 Auto Detect RP Command:  
 /me | /do | /w | /r | /f | /d
  
  </div>
  
- <div class="mode-box">
+<div class="mode-box" id="indoModeBox">
 
 <label style="display:flex;align-items:center;gap:8px;">
 
@@ -291,21 +568,147 @@ Translate Ke Indonesia
 
 </label>
 
+</div>  <div class="buttons">
+
+<div id="translateButtons"
+style="display:flex;gap:10px;flex:1;">
+
+<button class="glow"
+onclick="translateText('casual')">
+
+Casual
+
+</button>
+
+<button class="glow"
+onclick="translateText('gangster')">
+
+Gangster
+
+</button>
+
+<button class="glow"
+onclick="translateText('formal')">
+
+Formal
+
+</button>
+
 </div>
-</div>  <div class="buttons">  <button class="glow" onclick="translateText('casual')">  
-Casual  
-</button>  <button class="glow" onclick="translateText('gangster')">  
-Gangster  
-</button>  <button class="glow" onclick="translateText('formal')">  
-Formal  
-</button>  <button class="glow" onclick="manualCopy()">  
-Copy  
-</button>  <button class="glow" onclick="quickClear()">  
-Clear  
-</button>  </div>  <div class="output">
+<div id="choiceButtons"
+style="
+display:none;
+gap:8px;
+margin-top:10px;
+flex-wrap:wrap;
+">
+
+<button class="glow small-btn"
+onclick="setReplyMood('agree')">
+
+Setuju
+
+</button>
+
+<button class="glow small-btn"
+onclick="setReplyMood('neutral')">
+
+Netral
+
+</button>
+
+<button class="glow small-btn"
+onclick="setReplyMood('reject')">
+
+Tolak
+
+</button>
+
+</div>
+<div id="replyButtons"
+style="display:none;flex:1;">
+
+<button class="glow"
+onclick="translateText('reply')"
+style="width:100%;">
+
+Generate Reply
+
+</button>
+
+</div>
+
+<button class="glow"
+onclick="manualCopy()">
+
+Copy
+
+</button>
+
+<button class="glow"
+onclick="quickClear()">
+
+Clear
+
+</button>
+
+</div>  <!-- TRANSLATE LAWAN RP -->
+<div id="replyTranslateBox"
+class="output"
+style="display:none;">
+
+<div style="
+margin-bottom:8px;
+color:#ffb266;
+font-size:13px;
+">
+
+Arti Pesan Lawan RP
+
+</div>
+
+<textarea id="translateResult" readonly>
+Hasil translate lawan muncul di sini...
+</textarea>
+
+</div>
+
+<!-- HASIL REPLY -->
+<div class="output">
+
+<div style="
+margin-bottom:8px;
+color:#ffb266;
+font-size:13px;
+">
+
+Reply Chat
+
+</div>
 
 <textarea id="hasil" readonly>
-Hasil translate muncul di sini...
+Hasil reply muncul di sini...
+</textarea>
+
+</div>
+
+<!-- TRANSLATE REPLY -->
+<div id="myReplyTranslateBox"
+class="output"
+style="display:none;">
+
+<div style="
+margin-bottom:8px;
+color:#ffb266;
+font-size:13px;
+">
+
+Arti Reply Kamu
+
+</div>
+
+<textarea id="myReplyTranslate" readonly>
+Arti reply kamu muncul di sini...
 </textarea>
 
 </div>
@@ -324,10 +727,153 @@ AWeb Window
 
 </div>
 
+<div class="tutorial-box">
+
+<h3>&#128214; About Slang-Translator</h3>
+
+<p>
+Slang-Translator adalah tools untuk translate
+bahasa Indonesia  English slang secara otomatis.
+Cocok dipakai buat:
+RP server,
+chat luar negeri,
+hood slang,
+dan quick reply RP.
+</p>
+
+<p>
+Website ini menggunakan AI untuk membuat
+hasil translate lebih natural,
+lebih smooth,
+dan lebih realistis seperti orang asli.
+</p>
+
+<hr>
+
+<h3>&#128293; Translator Mode</h3>
+
+<p>
+Mode ini digunakan untuk translate biasa.
+Kalian cukup paste text,
+lalu pilih style translate sesuai kebutuhan.
+</p>
+
+<p>
+<b>Casual</b><br>
+Dipakai untuk translate santai,
+texting vibe,
+dan percakapan sehari-hari.
+</p>
+
+<p>
+<b>Gangster</b><br>
+Dipakai untuk hood slang,
+street slang,
+RP gangster,
+dan gaya bicara lebih keras.
+</p>
+
+<p>
+<b>Formal</b><br>
+Dipakai untuk bahasa formal,
+rapi,
+dan professional English.
+</p>
+
+<p>
+Jika tombol
+<b>"Translate Ke Indonesia"</b>
+diaktifkan,
+AI akan otomatis mengubah
+English slang menjadi bahasa Indonesia.
+</p>
+
+<hr>
+
+<h3>&#9889; Quick Reply Mode</h3>
+
+<p>
+Mode ini dibuat khusus untuk membantu
+membalas chat RP lebih cepat.
+</p>
+
+<p>
+Cara pakai:
+</p>
+
+<p>
+1. Masuk ke menu <b>Quick Reply</b><br>
+2. Paste chat lawan RP<br>
+3. Pilih mood reply:
+Setuju / Netral / Tolak<br>
+4. Klik <b>Generate Reply</b>
+</p>
+
+<p>
+AI akan otomatis:
+</p>
+
+<p>
+- Membuat balasan realistis<br>
+- Menyesuaikan vibe lawan bicara<br>
+- Menyesuaikan slang secara otomatis<br>
+- Mengingat chat sebelumnya<br>
+- Membantu reply lebih natural
+</p>
+
+<p>
+Fitur ini cocok untuk:
+RP gangster,
+street RP,
+faction RP,
+dan social RP.
+</p>
+
+<hr>
+
+<h3>&#129504; Chatlog Memory</h3>
+
+<p>
+Fitur Memory digunakan untuk menyimpan
+chat sebelumnya sementara,
+agar AI tetap nyambung saat reply.
+</p>
+
+<p>
+Jadi reply tidak terasa random
+dan percakapan lebih konsisten.
+</p>
+
+<hr>
+
+<h3>&#128100; Developer Discord</h3>
+
+<p>
+Jika ada bug,
+error,
+request fitur,
+atau ingin bertanya soal website ini,
+kalian bisa langsung hubungi Discord saya.
+</p>
+
+<p>
+Discord:<br>
+<a href="https://discord.com/users/1346809016965402707"
+target="_blank">
+
+@Lilzyy
+
+</a>
+</p>
+</div>
+
 <div class="credit">
 Made By Lilzyy 
-</div> <script>  
+</div>
+
+ <script>  
   
+ 
 /* SAVE API KEY */  
   
 window.onload = function(){  
@@ -339,6 +885,7 @@ window.onload = function(){
   }  
   
 }  
+  
   
 /* COPY SYSTEM */  
   
@@ -395,7 +942,7 @@ return false;
 async function manualCopy(){
 
 const text =
-document.getElementById('hasil').innerText;
+document.getElementById('hasil').value;
 
 if(
 !text ||
@@ -419,14 +966,253 @@ function quickClear(){
   
   document.getElementById('input').value = '';  
   
-  document.getElementById('hasil').innerText =  
-  'Hasil translate muncul di sini...';  
+  document.getElementById('hasil').value =
+'Hasil translate muncul di sini...';
   
 }  
   
+  /* QUICK REPLY MODE */
+
+let currentMode = "translator";
+
+let replyMood = "";
+function toggleMemoryBox(){
+
+const box =
+document.getElementById("memoryBox");
+
+if(box.style.display === "block"){
+
+box.style.display = "none";
+
+}else{
+
+box.style.display = "block";
+
+}
+
+}
+
+function clearMemory(){
+
+window.rpHistory = [];
+
+rpMemory = "";
+
+document
+.getElementById("memoryContent")
+.value = "";
+
+}
+
+function setReplyMood(type){
+
+replyMood = type;
+
+const buttons =
+document.querySelectorAll(
+"#choiceButtons button"
+);
+
+buttons.forEach(btn=>{
+
+btn.style.background =
+"#2b2b2be0";
+
+btn.style.color =
+"white";
+
+});
+
+if(type === "agree"){
+
+buttons[0].style.background =
+"#ff7300";
+
+buttons[0].style.color =
+"black";
+
+}
+
+if(type === "neutral"){
+
+buttons[1].style.background =
+"#ff7300";
+
+buttons[1].style.color =
+"black";
+
+}
+
+if(type === "reject"){
+
+buttons[2].style.background =
+"#ff7300";
+
+buttons[2].style.color =
+"black";
+
+}
+
+}
+
+function switchMode(mode){
+
+currentMode = mode;
+
+/* BUTTON ACTIVE */
+
+document
+.getElementById("translatorBtn")
+.classList.remove("active");
+
+document
+.getElementById("replyBtn")
+.classList.remove("active");
+
+/* MODE */
+
+if(mode === "translator"){
+
+document
+.getElementById("indoModeBox")
+.style.display = "block";
+
+document
+.getElementById("replyTranslateBox")
+.style.display = "none";
+
+document
+.getElementById("myReplyTranslateBox")
+.style.display = "none";
+
+document
+.getElementById("choiceButtons")
+.style.display = "none";
+
+document
+.getElementById("translateButtons")
+.style.display = "flex";
+
+document
+.getElementById("replyButtons")
+.style.display = "none";
+
+document
+.getElementById("translatorBtn")
+.classList.add("active");
+
+document.querySelector("h1").innerText =
+"Slang-Translator ";
+
+document.getElementById("input")
+.placeholder =
+"Paste text Indonesia...";
+
+}
+
+if(mode === "reply"){
+
+document
+.getElementById("indoModeBox")
+.style.display = "none";
+
+document
+.getElementById("replyTranslateBox")
+.style.display = "block";
+
+document
+.getElementById("myReplyTranslateBox")
+.style.display = "block";
+
+document
+.getElementById("choiceButtons")
+.style.display = "flex";
+
+document
+.getElementById("translateButtons")
+.style.display = "none";
+
+document
+.getElementById("replyButtons")
+.style.display = "flex";
+
+document
+.getElementById("replyBtn")
+.classList.add("active");
+
+document.querySelector("h1").innerText =
+"Quick Reply ";
+
+document.getElementById("input")
+.placeholder =
+"Paste opponent message...";
+
+}
+
+}
+
 /* AUTO RP DETECT */  
-  
+ let rpMemory = "";
+ window.rpHistory = [];
 function detectPrompt(text, mode){
+
+if(currentMode === "reply"){
+
+return `
+You are a realistic RP chat responder.
+
+Current RP Context:
+${rpMemory}
+
+Current Reply Mood:
+${replyMood || "neutral"}
+
+Task:
+Reply naturally like a real player.
+
+Rules:
+- remember ongoing conversation
+- keep relationship consistency
+- never invent names
+- never mention unknown people
+- only use names mentioned by the user
+- do not create fake backstory
+- never assume relationships
+- do not suddenly act like close friends
+- never overreact
+- avoid cringe responses
+- avoid repetitive replies
+- keep replies believable
+- act like a normal RP player
+- do not talk like AI
+- do not use overly poetic words
+- avoid excessive slang spam
+- avoid random respect/disrespect
+- only reply based on current context
+- if context is unclear, reply safely
+- match user's vibe
+- detect user's speaking style automatically
+- if user uses hood slang, reply with hood slang
+- reply more tough and street-like
+- avoid soft personality
+- talk like gang members naturally
+- keep responses confident
+- avoid acting innocent
+- if user talks casually, reply casually
+- if user talks formally, reply formally
+- keep same energy as the user
+- never suddenly switch speaking style
+- short response
+- realistic
+- RP friendly
+- no explanation
+- no quotation marks
+- if replyMood is agree, respond positively
+- if replyMood is neutral, respond naturally
+- if replyMood is reject, respond negatively but realistic
+`;
+}
 
 const lower = text.toLowerCase();
 
@@ -601,8 +1387,6 @@ ${rpStyle}
 `;
 
 }
-
-  return basePrompt;  
   
 }  
   
@@ -637,7 +1421,7 @@ async function translateText(mode){
   
   localStorage.setItem("groq_api", apiKey);  
   
-  output.innerText = 'Loading...';  
+  output.value = 'Loading...';
   
   const prompt = detectPrompt(input, mode);  
   
@@ -669,7 +1453,9 @@ async function translateText(mode){
           }  
         ],  
   
-        temperature:0.5,  
+        temperature:0.7,
+       presence_penalty:0.4,
+        frequency_penalty:0.3,
         max_tokens:100  
   
       })  
@@ -678,10 +1464,183 @@ async function translateText(mode){
   
     const data = await response.json();  
   
-    const result =  
-    data.choices[0].message.content;  
+    const result =
+data?.choices?.[0]?.message?.content ||
+"Failed generate reply";
+
+/* RESET MOOD */
+
+replyMood = "";
+
+const buttons =
+document.querySelectorAll(
+"#choiceButtons button"
+);
+
+buttons.forEach(btn=>{
+
+btn.style.background =
+"#2b2b2be0";
+
+btn.style.color =
+"white";
+
+});
+
+/* AUTO TRANSLATE QUICK REPLY */
+if(currentMode === "reply"){
+
+try{
+
+/* TRANSLATE LAWAN RP */
+const translateIncoming =
+await fetch(
+'https://api.groq.com/openai/v1/chat/completions',
+{
+
+method:'POST',
+
+headers:{
+'Authorization':`Bearer ${apiKey}`,
+'Content-Type':'application/json'
+},
+
+body:JSON.stringify({
+
+model:'llama-3.3-70b-versatile',
+
+messages:[
+
+{
+role:'system',
+content:
+'Translate English slang into natural Indonesian. Translation only.'
+},
+
+{
+role:'user',
+content:input
+}
+
+],
+
+temperature:0.3,
+max_tokens:120
+
+})
+
+});
+
+const incomingData =
+await translateIncoming.json();
+
+document
+.getElementById("translateResult")
+.value =
+incomingData
+.choices[0]
+.message
+.content;
+
+
+/* TRANSLATE REPLY AI */
+const translateReply =
+await fetch(
+'https://api.groq.com/openai/v1/chat/completions',
+{
+
+method:'POST',
+
+headers:{
+'Authorization':`Bearer ${apiKey}`,
+'Content-Type':'application/json'
+},
+
+body:JSON.stringify({
+
+model:'llama-3.3-70b-versatile',
+
+messages:[
+
+{
+role:'system',
+content:
+'Translate English slang into natural Indonesian. Translation only.'
+},
+
+{
+role:'user',
+content:result
+}
+
+],
+
+temperature:0.3,
+max_tokens:120
+
+})
+
+});
+
+const replyData =
+await translateReply.json();
+
+document
+.getElementById("myReplyTranslate")
+.value =
+replyData
+.choices[0]
+.message
+.content;
+
+}catch(err){
+
+console.log(err);
+
+}
+
+}
+
+/* QUICK REPLY MEMORY */
+if(currentMode === "reply"){
+
+/* SIMPAN CHAT */
+const newMemory = {
+user: input,
+reply: result
+};
+
+/* ARRAY MEMORY */
+if(!window.rpHistory){
+
+window.rpHistory = [];
+
+}
+
+/* PUSH */
+window.rpHistory.push(newMemory);
+
+/* KEEP LAST 5 */
+window.rpHistory =
+window.rpHistory.slice(-5);
+
+/* FORMAT MEMORY */
+rpMemory =
+window.rpHistory.map(chat =>
+
+`User: ${chat.user}
+Reply: ${chat.reply}`
+
+).join("\n\n");
+/* UPDATE MEMORY UI */
+
+document
+.getElementById("memoryContent")
+.value = rpMemory;
+}
   
-    output.innerText = result;  
+    output.value = result;
+    
   
     const copied =
 await copyText(result);
@@ -696,8 +1655,8 @@ alert("Tekan tahan hasil translate lalu copy manual");
   
   catch(err){  
   
-    output.innerText =  
-    'Error: ' + err;  
+    output.value =
+'Error: ' + err;
   
   }  
   
@@ -778,8 +1737,44 @@ console.log(err);
 
 }
 
+
 /* JALANKAN */
 userLogger();
 
-</script>  </body>  
+
+</script>
+
+
+<!-- MEMORY BUTTON -->
+
+<button id="memoryBtn"
+onclick="toggleMemoryBox()">
+
+Memory Chatlog
+
+</button>
+
+<!-- MEMORY BOX -->
+
+<div id="memoryBox">
+
+<div id="memoryHeader">
+
+Chatlog Memory
+
+<button id="clearMemoryBtn"
+onclick="clearMemory()">
+
+Clear
+
+</button>
+
+</div>
+
+<textarea
+id="memoryContent"
+readonly></textarea>
+
+</div>
+</body>  
 </html>  
