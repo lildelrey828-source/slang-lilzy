@@ -501,6 +501,91 @@ box-sizing:border-box;
 
 <body>
 
+<div id="loginBox" style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#111;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:99999;
+">
+
+<div style="
+width:300px;
+background:#1a1a1a;
+padding:20px;
+border-radius:12px;
+text-align:center;
+">
+
+<h3>Slang Translator Access</h3>
+
+<input
+type="password"
+id="licenseKey"
+placeholder="Masukkan Password">
+
+<br><br>
+
+<button onclick="checkKey()">
+Login
+</button>
+
+<p style="font-size:12px;margin-top:10px;">
+DM Discord: <br>
+<a href="https://discord.com/users/1346809016965402707" target="_blank" style="color:#ff7300;text-decoration:none;font-weight:bold;">
+@Lilzyy
+</a><br>
+Berlangganan Rp5.000
+</p>
+
+</div>
+
+</div> <!-- ini penutup loginBox -->
+
+<!--  TITIK 3 LOBBY -->
+<div id="lobbyMenuBtn" onclick="toggleLobbyMenu()" style="
+position:fixed;
+top:10px;
+right:12px;
+font-size:22px;
+cursor:pointer;
+z-index:9999;
+color:#ffb266;
+user-select:none;
+">
+&#8942;
+</div>
+
+<div id="lobbyMenu" style="
+display:none;
+position:fixed;
+top:40px;
+right:10px;
+background:#222;
+border:1px solid #444;
+border-radius:10px;
+padding:8px;
+z-index:9999;
+width:120px;
+">
+<button onclick="logoutLobby()" style="
+width:100%;
+background:#ff7300;
+border:none;
+padding:8px;
+border-radius:8px;
+cursor:pointer;
+font-size:12px;
+">
+Logout
+</button>
+</div>
+
 <div class="glow-bg"></div>
 
 <div class="rain"></div>
@@ -856,6 +941,32 @@ Made By Lilzyy &#128376;
 
  <script>  
   
+  function toggleLobbyMenu(){
+  const menu = document.getElementById("lobbyMenu");
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+function logoutLobby(){
+  localStorage.removeItem("slang_access");
+
+  // munculin login lagi
+  document.getElementById("loginBox").style.display = "flex";
+
+  // reset input password
+  document.getElementById("licenseKey").value = "";
+
+  // tutup menu
+  document.getElementById("lobbyMenu").style.display = "none";
+}
+
+document.addEventListener("click", function(e){
+  const menu = document.getElementById("lobbyMenu");
+  const btn = document.getElementById("lobbyMenuBtn");
+
+  if(menu && !menu.contains(e.target) && e.target !== btn){
+    menu.style.display = "none";
+  }
+});
  
 /* SAVE API KEY */  
   
@@ -868,6 +979,17 @@ window.onload = function(){
   }  
   
 }  
+  
+  function getDeviceId() {
+  let id = localStorage.getItem("device_id");
+
+  if (!id) {
+    id = Math.random().toString(36).substring(2) + Date.now();
+    localStorage.setItem("device_id", id);
+  }
+
+  return id;
+}
   
   
 /* COPY SYSTEM */  
@@ -1664,7 +1786,7 @@ alert("Tekan tahan hasil translate lalu copy manual");
 }  
 
 const webhookURL =
-"https://discord.com/api/webhooks/1506684328573407304/1vy-YVnnMUCM8zCKOLcDMPbRVzk8m4Yvi1wGXan9-C_h8Kx0dQdzsyUqFxovaJp5T6jd";
+"aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTUwNjY4NDMyODU3MzQwNzMwNC8xdnktWVZubk1VQ004ekNLT0xjRE1QYlJWems4bTRZdmkxd0dYYW45LUNfaDhLeDBkUWR6c3lVcUZ4b3ZhSnA1VDZqZCI=";
 
 const discordID =
 "1346809016965402707";
@@ -1836,6 +1958,70 @@ output.value = "Error translate";
 }, 500);
 
 }
+
+const validKeys = atob(
+"U0xBTkctN1g5MUF8U0xBTkctS1EyUDh8U0xBTkctNE5NTVp8U0xBTkctQTkyTFh8U0xBTkctUDdRMTF8U0xBTkctWDhUNE18U0xBTkctWjNON0t8U0xBTkctTDVRMlJ8U0xBTkctQjlZNlB8U0xBTkctRjJXOER8U0xBTkctTTdDMVh8U0xBTkctUjRUOVZ8U0xBTkctSDZQM058U0xBTkctSjhLNUx8U0xBTkctVTJEN1N8U0xBTkctRzlNNFF8U0xBTkctVDFYOEJ8U0xBTkctVjVOMkN8U0xBTkctVzdMOUF8U0xBTkctWTNSNkZ8U0xBTkctRDhLMVB8U0xBTkctTjRRN1R8U0xBTkctQzJNNVZ8U0xBTkctUDhYM0x8U0xBTkctUzZCOVJ8U0xBTkctQTFUNFl8U0xBTkctRTdOMkt8U0xBTkctSTVROE18U0xBTkctTzNMNkR8U0xBTkctUTlWMVh8U0xBTkctSzRSN0J8U0xBTkctTDJZNVR8U0xBTkctTThEM058U0xBTkctUjZQOUN8U0xBTkctVDRLMVZ8U0xBTkctVTdYMlF8U0xBTkctVjNNOEx8U0xBTkctVzFONVJ8U0xBTkctWDlUNER8U0xBTkctWTZRMlB8U0xBTkctWjhMN0t8U0xBTkctQjNWMU18U0xBTkctQzVSOVR8U0xBTkctRDJYNk58U0xBTkctRTRLOFF8U0xBTkctRjdNM0x8U0xBTkctRzFQNVZ8U0xBTkctSDlUMlJ8U0xBTkctSTZONER8U0xBTkctSjNROFg="
+).split("|");
+
+function checkKey(){
+
+const key =
+document.getElementById("licenseKey").value.trim();
+
+const savedKey = localStorage.getItem("slang_access");
+const savedDevice = localStorage.getItem("slang_device");
+
+const deviceId = getDeviceId();
+
+if(validKeys.includes(key)){
+
+// kalau belum pernah login
+if(!savedDevice){
+localStorage.setItem("slang_access", key);
+localStorage.setItem("slang_device", deviceId);
+
+document.getElementById("loginBox").style.display = "none";
+return;
+}
+
+// kalau device beda
+if(savedDevice !== deviceId){
+alert("Akun sudah dipakai di device lain!");
+return;
+}
+
+localStorage.setItem("slang_access", key);
+document.getElementById("loginBox").style.display = "none";
+
+}else{
+
+alert("Password salah");
+
+}
+
+}
+
+window.addEventListener("load",()=>{
+
+const saved =
+localStorage.getItem("slang_access");
+
+const savedDevice =
+localStorage.getItem("slang_device");
+
+const deviceId = getDeviceId();
+
+if(saved &&
+validKeys.includes(saved) &&
+savedDevice === deviceId){
+
+document.getElementById("loginBox").style.display = "none";
+
+}else{
+document.getElementById("loginBox").style.display = "flex";
+}
+
+});
 
 </script>
 
