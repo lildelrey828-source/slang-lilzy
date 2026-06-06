@@ -945,7 +945,7 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const supabase = createClient(
   "https://PROJECTLU.supabase.co",
-  "ANON_KEY_ASLI"
+  "sb_publishable_OQd0TL4vd9B1DPi4H1qBAw_SEeboVMv"
 );
   
   function toggleLobbyMenu(){
@@ -1984,24 +1984,13 @@ async function checkKey(){
 
     alert("3");
 
-    const { data, error } = await supabase
+    const result = await supabase
       .from("licenses")
-      .select("*")
-      .eq("license_key", key)
-      .single();
+      .select("*");
 
     alert("4");
 
-    if(error || !data){
-      alert("Password salah");
-      return;
-    }
-
-    alert("5");
-
-    const deviceId = getDeviceId();
-
-    alert("6");
+    alert(JSON.stringify(result));
 
   }catch(err){
 
