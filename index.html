@@ -936,10 +936,17 @@ target="_blank">
 </div>
 
 <div class="credit">
-Made By Lilzyy &#128376;
+Made By Lilzyy 
 </div>
 
- <script>  
+<script type="module">
+
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://PROJECTLU.supabase.co",
+  "ANON_KEY_ASLI"
+);
   
   function toggleLobbyMenu(){
   const menu = document.getElementById("lobbyMenu");
@@ -1959,70 +1966,87 @@ output.value = "Error translate";
 
 }
 
-const validKeys = atob(
-"U0xBTkctN1g5MUF8U0xBTkctS1EyUDh8U0xBTkctNE5NTVp8U0xBTkctQTkyTFh8U0xBTkctUDdRMTF8U0xBTkctWDhUNE18U0xBTkctWjNON0t8U0xBTkctTDVRMlJ8U0xBTkctQjlZNlB8U0xBTkctRjJXOER8U0xBTkctTTdDMVh8U0xBTkctUjRUOVZ8U0xBTkctSDZQM058U0xBTkctSjhLNUx8U0xBTkctVTJEN1N8U0xBTkctRzlNNFF8U0xBTkctVDFYOEJ8U0xBTkctVjVOMkN8U0xBTkctVzdMOUF8U0xBTkctWTNSNkZ8U0xBTkctRDhLMVB8U0xBTkctTjRRN1R8U0xBTkctQzJNNVZ8U0xBTkctUDhYM0x8U0xBTkctUzZCOVJ8U0xBTkctQTFUNFl8U0xBTkctRTdOMkt8U0xBTkctSTVROE18U0xBTkctTzNMNkR8U0xBTkctUTlWMVh8U0xBTkctSzRSN0J8U0xBTkctTDJZNVR8U0xBTkctTThEM058U0xBTkctUjZQOUN8U0xBTkctVDRLMVZ8U0xBTkctVTdYMlF8U0xBTkctVjNNOEx8U0xBTkctVzFONVJ8U0xBTkctWDlUNER8U0xBTkctWTZRMlB8U0xBTkctWjhMN0t8U0xBTkctQjNWMU18U0xBTkctQzVSOVR8U0xBTkctRDJYNk58U0xBTkctRTRLOFF8U0xBTkctRjdNM0x8U0xBTkctRzFQNVZ8U0xBTkctSDlUMlJ8U0xBTkctSTZONER8U0xBTkctSjNROFg="
-).split("|");
+async function checkKey(){
 
-function checkKey(){
+  alert("1");
 
-const key =
-document.getElementById("licenseKey").value.trim();
+  const key =
+  document.getElementById("licenseKey").value.trim();
 
-const savedKey = localStorage.getItem("slang_access");
-const savedDevice = localStorage.getItem("slang_device");
+  alert("2");
 
-const deviceId = getDeviceId();
+  if(!key){
+    alert("Masukkan password");
+    return;
+  }
 
-if(validKeys.includes(key)){
+  try{
 
-// kalau belum pernah login
-if(!savedDevice){
-localStorage.setItem("slang_access", key);
-localStorage.setItem("slang_device", deviceId);
+    alert("3");
 
-document.getElementById("loginBox").style.display = "none";
-return;
-}
+    const { data, error } = await supabase
+      .from("licenses")
+      .select("*")
+      .eq("license_key", key)
+      .single();
 
-// kalau device beda
-if(savedDevice !== deviceId){
-alert("Akun sudah dipakai di device lain!");
-return;
-}
+    alert("4");
 
-localStorage.setItem("slang_access", key);
-document.getElementById("loginBox").style.display = "none";
+    if(error || !data){
+      alert("Password salah");
+      return;
+    }
 
-}else{
+    alert("5");
 
-alert("Password salah");
+    const deviceId = getDeviceId();
 
-}
+    alert("6");
+
+  }catch(err){
+
+    alert("ERROR: " + err.message);
+
+  }
 
 }
 
 window.addEventListener("load",()=>{
 
-const saved =
-localStorage.getItem("slang_access");
+  const saved =
+  localStorage.getItem("slang_access");
 
-const savedDevice =
-localStorage.getItem("slang_device");
+  const savedDevice =
+  localStorage.getItem("slang_device");
 
-const deviceId = getDeviceId();
+  const deviceId =
+  getDeviceId();
 
-if(saved &&
-validKeys.includes(saved) &&
-savedDevice === deviceId){
+  if(
+    saved &&
+    savedDevice &&
+    savedDevice === deviceId
+  ){
 
-document.getElementById("loginBox").style.display = "none";
+    document.getElementById("loginBox").style.display = "none";
 
-}else{
-document.getElementById("loginBox").style.display = "flex";
-}
+  }else{
+
+    document.getElementById("loginBox").style.display = "flex";
+
+  }
 
 });
 
+window.toggleLobbyMenu = toggleLobbyMenu;
+window.logoutLobby = logoutLobby;
+window.switchMode = switchMode;
+window.translateText = translateText;
+window.manualCopy = manualCopy;
+window.quickClear = quickClear;
+window.setReplyMood = setReplyMood;
+window.liveTranslate = liveTranslate;
+window.checkKey = checkKey;
 </script>
 
 
