@@ -948,6 +948,8 @@ const supabase = createClient(
   "sb_publishable_OQd0TL4vd9B1DPi4H1qBAw_SEeboVMv"
 );
   
+  alert("SUPABASE URL = " + supabase.supabaseUrl);
+  
   function toggleLobbyMenu(){
   const menu = document.getElementById("lobbyMenu");
   menu.style.display = menu.style.display === "block" ? "none" : "block";
