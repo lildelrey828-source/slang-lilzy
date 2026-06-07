@@ -1982,18 +1982,49 @@ async function checkKey(){
 alert("INPUT = [" + key + "]");
 
     const { data, error } = await supabase
-      .from("licenses")
-      .select("*")
-      .eq("license_key", key)
-      .single();
-      
-    if (error || !data) {
+  .from("licenses")
+  .select("*")
+  .eq("license_key", key)
+  .single();
+
+if (error || !data) {
   alert("KEY TIDAK DITEMUKAN");
   return;
 }
 
+const deviceId = getDeviceId();
+
+// pertama kali login
+if (!data.device_id) {
+
+  const { error: updateError } = await supabase
+    .from("licenses")
+    .update({
+      device_id: deviceId
+    })
+    .eq("id", data.id);
+
+  if (updateError) {
+  alert(
+    "UPDATE ERROR = " +
+    JSON.stringify(updateError)
+  );
+  return;
+}
+}
+
+// key sudah dipakai device lain
+if (
+  data.device_id &&
+  data.device_id !== deviceId
+) {
+  alert("KEY SUDAH DIGUNAKAN DI PERANGKAT LAIN");
+  return;
+}
+
+// login sukses
 localStorage.setItem("slang_access", "true");
-localStorage.setItem("slang_device", getDeviceId());
+localStorage.setItem("slang_device", deviceId);
 
 document.getElementById("loginBox").style.display = "none";
 
