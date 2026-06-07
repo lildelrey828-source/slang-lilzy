@@ -1980,11 +1980,16 @@ async function checkKey(){
 
   try {
 
+alert("INPUT = [" + key + "]");
+
     const { data, error } = await supabase
       .from("licenses")
       .select("*")
       .eq("license_key", key)
       .single();
+
+alert("DATA = " + JSON.stringify(data));
+alert("ERROR = " + JSON.stringify(error));
 
     if (error) {
       alert("KEY TIDAK DITEMUKAN");
