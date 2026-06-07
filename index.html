@@ -1982,21 +1982,35 @@ async function checkKey(){
     return;
   }
 
-  try{
+  try {
 
-    alert("3");
+  alert("3");
 
-    const { data, error } = await supabase
-  .from("licenses")
-  .select("*")
-  .limit(1);
+  try {
 
-alert("DATA = " + JSON.stringify(data));
-alert("ERROR = " + JSON.stringify(error));
+    const res = await fetch(
+      "https://awnecbjttmciouhplikt.supabase.co/rest/v1/"
+    );
 
-  }catch(err){
+    alert("STATUS = " + res.status);
 
-    alert("CATCH = " + err.message);
+  } catch(err) {
+
+    alert("FETCH ERROR = " + err.message);
+
+  }
+
+  const { data, error } = await supabase
+    .from("licenses")
+    .select("*")
+    .limit(1);
+
+  alert("DATA = " + JSON.stringify(data));
+  alert("ERROR = " + JSON.stringify(error));
+
+} catch(err) {
+
+  alert("CATCH = " + err.message);
 
   }
 
