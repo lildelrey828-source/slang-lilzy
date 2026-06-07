@@ -1987,12 +1987,12 @@ async function checkKey(){
     alert("3");
 
     const { data, error } = await supabase
-      .from("licenses")
-      .select("*")
-      .limit(1);
+  .from("licenses")
+  .select("*")
+  .limit(1);
 
-    alert("DATA = " + JSON.stringify(data));
-    alert("ERROR = " + JSON.stringify(error));
+alert("DATA = " + JSON.stringify(data));
+alert("ERROR = " + JSON.stringify(error));
 
   }catch(err){
 
