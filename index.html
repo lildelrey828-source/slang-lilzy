@@ -1970,12 +1970,8 @@ output.value = "Error translate";
 
 async function checkKey(){
 
-  alert("1");
-
   const key =
   document.getElementById("licenseKey").value.trim();
-
-  alert("2");
 
   if(!key){
     alert("Masukkan password");
@@ -1984,33 +1980,22 @@ async function checkKey(){
 
   try {
 
-  alert("3");
+    const { data, error } = await supabase
+      .from("licenses")
+      .select("*")
+      .eq("license_key", key)
+      .single();
 
-  try {
+    if (error) {
+      alert("KEY TIDAK DITEMUKAN");
+      return;
+    }
 
-    const res = await fetch(
-      "https://awnecbjttmciouhplikt.supabase.co/rest/v1/"
-    );
-
-    alert("STATUS = " + res.status);
+    alert("KEY VALID");
 
   } catch(err) {
 
-    alert("FETCH ERROR = " + err.message);
-
-  }
-
-  const { data, error } = await supabase
-    .from("licenses")
-    .select("*")
-    .limit(1);
-
-  alert("DATA = " + JSON.stringify(data));
-  alert("ERROR = " + JSON.stringify(error));
-
-} catch(err) {
-
-  alert("CATCH = " + err.message);
+    alert("CATCH = " + err.message);
 
   }
 
