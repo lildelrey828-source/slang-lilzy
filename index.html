@@ -1967,31 +1967,10 @@ output.value = "Error translate";
 
 }
 
-function getDeviceId(){
-
-  let id = localStorage.getItem("device_id");
-
-  if(!id){
-
-    id = crypto.randomUUID();
-
-    localStorage.setItem(
-      "device_id",
-      id
-    );
-
-  }
-
-  return id;
-
-}
-
 async function checkKey(){
 
   const key =
   document.getElementById("licenseKey").value.trim();
-
-const deviceId = getDeviceId();
 
   if(!key){
     alert("Masukkan password");
@@ -2008,30 +1987,9 @@ alert("INPUT = [" + key + "]");
       .eq("license_key", key)
       .single();
       
-    if(error || !data){
+    if (error || !data) {
   alert("KEY TIDAK DITEMUKAN");
   return;
-}
-
-if(
-  data.device_id &&
-  data.device_id !== deviceId
-){
-  alert(
-    "Password sudah digunakan di perangkat lain"
-  );
-  return;
-}
-
-if(!data.device_id){
-
-  await supabase
-    .from("licenses")
-    .update({
-      device_id: deviceId
-    })
-    .eq("id", data.id);
-
 }
 
 localStorage.setItem("slang_access", "true");
